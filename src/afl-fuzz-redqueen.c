@@ -312,13 +312,26 @@ static u8 colorization(afl_state_t *afl, u8 *buf, u32 len,
 
   memcpy(backup, buf, len);
   memcpy(changed, buf, len);
-  if (afl->cmplog_random_colorization) {
 
-    random_replace(afl, changed, len);
+  switch (afl->cmplog_random_colorization) {
 
-  } else {
+    case 0:
+      type_replace(afl, changed, len);
+      break;
+    case 1:
+      random_replace(afl, changed, len);
+      break;
+    default:
+      if (unlikely(rand_below(afl, ((afl->queue_cur->is_ascii << 2) + 3)) ==
+                   0)) {
 
-    type_replace(afl, changed, len);
+        random_replace(afl, changed, len);
+
+      } else {
+
+        type_replace(afl, changed, len);
+
+      }
 
   }
 
