@@ -1114,6 +1114,10 @@ int main(int argc, char **argv_orig, char **envp) {
             case 'T':
               afl->cmplog_enable_transform = 1;
               break;
+            case 'c':
+            case 'C':
+              afl->cmplog_random_colorization = 2;
+              break;
             case 'r':
             case 'R':
               afl->cmplog_random_colorization = 1;
