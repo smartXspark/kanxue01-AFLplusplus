@@ -60,7 +60,7 @@ double compute_weight(afl_state_t *afl, struct queue_entry *q,
   weight *= (1 + (q->tc_ref / avg_top_size));
   if (unlikely(weight < 1.0)) { weight = 1.0; }
   if (unlikely(q->favored)) { weight *= 5; }
-  if (unlikely(!q->was_fuzzed)) { weight *= 2; }
+  if (unlikely(!q->was_fuzzed)) { weight *= 5; }
 
   return weight;
 
