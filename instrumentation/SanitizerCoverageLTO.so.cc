@@ -17,7 +17,7 @@
 #include "llvm/Transforms/Instrumentation/SanitizerCoverage.h"
 #include "llvm/ADT/ArrayRef.h"
 #include "llvm/ADT/SmallVector.h"
-#if LLVM_VERSION_MAJOR < 16
+#if LLVM_VERSION_MAJOR <= 16
 #include "llvm/ADT/Triple.h"
 #endif
 #include "llvm/Analysis/EHPersonalities.h"
@@ -1792,7 +1792,7 @@ static void registerLTOPass(const PassManagerBuilder &,
 
 }
 
-#if LLVM_VERSION_MAJOR >= 16
+#if LLVM_VERSION_MAJOR >= 17
 char ModuleSanitizerCoverageLTO::ID = 0;
 static RegisterPass<ModuleSanitizerCoverageLTO> X("SanitizerCoverageLTO", "SanitizerCoverageLTO pass",
                              false /* Only looks at CFG */,
