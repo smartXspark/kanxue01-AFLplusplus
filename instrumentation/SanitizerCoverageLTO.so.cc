@@ -17,7 +17,9 @@
 #include "llvm/Transforms/Instrumentation/SanitizerCoverage.h"
 #include "llvm/ADT/ArrayRef.h"
 #include "llvm/ADT/SmallVector.h"
+#if LLVM_VERSION_MAJOR < 16
 #include "llvm/ADT/Triple.h"
+#endif
 #include "llvm/Analysis/EHPersonalities.h"
 #include "llvm/Analysis/PostDominators.h"
 #include "llvm/Analysis/ValueTracking.h"
@@ -174,6 +176,7 @@ class ModuleSanitizerCoverageLTO
     : public PassInfoMixin<ModuleSanitizerCoverageLTO> {
 
  public:
+  static char ID;
   ModuleSanitizerCoverageLTO(
       const SanitizerCoverageOptions &Options = SanitizerCoverageOptions())
       : Options(OverrideFromCL(Options)) {
@@ -266,11 +269,13 @@ class ModuleSanitizerCoverageLTOLegacyPass : public ModulePass {
 
  public:
   static char ID;
+/*
   StringRef   getPassName() const override {
 
     return "sancov-lto";
 
   }
+*/
 
   void getAnalysisUsage(AnalysisUsage &AU) const override {
 
@@ -1787,6 +1792,13 @@ static void registerLTOPass(const PassManagerBuilder &,
 
 }
 
+#if LLVM_VERSION_MAJOR >= 16
+char ModuleSanitizerCoverageLTO::ID = 0;
+static RegisterPass<ModuleSanitizerCoverageLTO> X("SanitizerCoverageLTO", "SanitizerCoverageLTO pass",
+                             false /* Only looks at CFG */,
+                             false /* Analysis Pass */);
+#else
+
 static RegisterStandardPasses RegisterCompTransPass(
     PassManagerBuilder::EP_OptimizerLast, registerLTOPass);
 
@@ -1797,4 +1809,4 @@ static RegisterStandardPasses RegisterCompTransPass0(
 static RegisterStandardPasses RegisterCompTransPassLTO(
     PassManagerBuilder::EP_FullLinkTimeOptimizationLast, registerLTOPass);
 #endif
-
+#endif
